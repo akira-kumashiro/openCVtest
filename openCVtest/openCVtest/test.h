@@ -17,24 +17,19 @@
 #include <opencv\highgui.h>
 #include <opencv2\highgui\highgui.hpp>
 
-class test
+class Test
 {
 public:
-	test(char argv[]);
-	~test();
-	bool run();
+	Test(char argv[]);//コンストラクタ
+	~Test();//デコンストラクタ
 private:
-	cv::Mat mat;
-	bool init();
+	cv::Mat mat;//読み込んだ画像
+	bool init();//クリック関係の設定
 	static void onMouse(int event, int x, int y, int flags, void * param);//ウィンドウクリック時の動作の登録
 	void onMouse(int event, int x, int y, int flags);
 
+	std::string windowName = "image";//ウインドウの名前
 
-	cv::Rect selection;
-	std::string windowName = "image";
-
-	cv::Point point = { -1,-1 };
-	cv::Point origin;
 	bool select_object = false;
 };
 

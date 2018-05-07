@@ -1,68 +1,49 @@
 #include "test.h"
 
-
-
-test::test(char argv[])
+Test::Test(char argv[])//コンストラクタ
 {
-	init();
+	init();//ウインドウの登録
 
-	mat = cv::imread(argv);
-	cv::imshow(windowName, mat);
+	mat = cv::imread(argv);//画像の読み込み
+	if (mat.data == NULL)//画像の読み込みに失敗したときの処理
+	{
+		std::cout << "Cannot open this file!" << std::endl;
+		return;
+	}
+	cv::imshow(windowName, mat);//画像の表示
 }
 
-
-test::~test()
+Test::~Test()//デコンストラクタ
 {
+	cv::destroyWindow(windowName);//指定したウインドウを閉じる
+	//全部のopenCVのウインドウを閉じたい時はcv::destroyAllWindows();
 }
 
-bool test::run()
+bool Test::init()
 {
-	return false;
-}
-
-bool test::init()
-{
-	cv::namedWindow(windowName, CV_WINDOW_AUTOSIZE);
+	cv::namedWindow(windowName, CV_WINDOW_AUTOSIZE);//ウインドウの名前をつけて生成
 	cv::setMouseCallback(windowName, onMouse, this);
-	return false;
+	return true;
 }
-void test::onMouse(int event, int x, int y, int flags, void * param)//ウィンドウクリック時の動作の登録
+
+void Test::onMouse(int event, int x, int y, int flags, void * param)//ウィンドウクリック時の動作の登録
 {
-	test* pThis = (test*)param;
+	Test* pThis = (Test*)param;
 	pThis->onMouse(event, x, y, flags);
 }
 
-void test::onMouse(int event, int x, int y, int flags)//クリック座標の距離の表示
+void Test::onMouse(int event, int x, int y, int flags)//クリック座標の距離の表示
 {
-	/*if (select_object)
-	{
-		selection.x = CV_IMIN(x, origin.x);
-		selection.y = CV_IMIN(y, origin.y);
-		selection.width = selection.x + CV_IABS(x - origin.x);
-		selection.height = selection.y + CV_IABS(y - origin.y);
-
-		selection.x = CV_IMAX(selection.x, 0);
-		selection.y = CV_IMAX(selection.y, 0);
-		selection.width = CV_IMIN(selection.width, mat.cols);
-		selection.height = CV_IMIN(selection.height, mat.rows);
-		selection.width -= selection.x;
-		selection.height -= selection.y;
-	}*/
-
 	switch (event)
 	{
-	case CV_EVENT_LBUTTONDOWN:
-		/*point.x = x;
-		point.y = y;
-		origin = cv::Point(x, y);
-		selection = cv::Rect(x, y, 0, 0);*/
-		std::cout << "click" << std::endl;
+	case CV_EVENT_LBUTTONDOWN://左クリックされた時
+		std::cout << "click at (x,y)=(" << std::to_string(x) << "," << std::to_string(y) << ")" << std::endl;
 		select_object = true;
 		break;
 
-	case CV_EVENT_LBUTTONUP:
+	case CV_EVENT_LBUTTONUP://左クリックをやめた時
 		select_object = false;
-		std::cout << "off" << std::endl;
+		std::cout << "off at (x,y)=(" << std::to_string(x) << "," << std::to_string(y) << ")" << std::endl;
 		break;
 
 	default:
